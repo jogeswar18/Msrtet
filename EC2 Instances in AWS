@@ -1,0 +1,49 @@
+Step1:
+=======
+I have install two Ubuntu  instances  with t2.miro
+----------------------------------------------------
+Names with
+=============
+Instance Name1 : MSR-test-Instance-1
+Instance Name 2 : MSR-test-Instance-2
+------------------------------------------------
+
+ Next(ssh communication perpose)
+ ========
+ -> creating new user Name -> test 
+ Password: 12345
+ Steps:sudo su -
+adduser test
+passwd test
+vi  /etc/ssh/sshd_config    --this is configuration files
+PermitRootLogin yes
+PasswordAuthentication yes
+systemctl restart sshd
+systemctl status sshd
+ls -l /etc/sudoers
+chmod 777 /etc/sudoers
+vi /etc/sudoers
+test            ALL=(ALL)       ALL
+chmod 440 /etc/sudoers
+check the user account su test and back to root sudo su-
+chmod 777 /etc/sudoers
+vi /etc/sudoers
+test            ALL=(ALL)       NOPASSWD: ALL
+chmod 440 /etc/sudoers
+---------------------------------------------------
+Nextstep:
+sudo apt update
+sudo apt-get install docker.io
+sudo apt-get install ansible
+sudo apt-get install git
+Installed below required tools
+===============================
+NVM – Version 0.33.2
+	Node – 8.12.0
+	Docker – 18.06 or latest
+	Docker Compose – 1.13 or latest
+	Openssl – latest version
+	Git – latest version
+
+------------------------------------------------------------------------------
+

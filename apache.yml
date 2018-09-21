@@ -1,0 +1,24 @@
+Using ansible playbook
+==========================================
+--- #This is install apache2
+- hosts: all
+  user: test
+  become: yes
+  connection: ssh
+  vars:
+    rhelpackage: httpd
+    ubuntupackage: apache2
+  tasks:
+     - name: installing apache webserver in rhel
+       yum: pkg={{rhelpackage}} state=installed
+       when: ansible_os_family== "RedHat"
+       notify: starting service httpd
+     - name: installing apache webserver in ubuntu
+       apt: pkg={{ubuntupackage}} state=installed
+       when: ansible_os_family=="debian"
+       notify: starting service apache2
+  handlers:
+     - name: starting service httpd
+       service: name={{rhelpackage}} state=started
+     - name: starting service apache2
+       service: name={{ubuntupackage}} state=started

@@ -1,0 +1,34 @@
+  ############################################################
+# Dockerfile to build couchdb container images
+# Based on Ubuntu
+############################################################
+# Set the base image to Ubuntu
+FROM ubuntu
+
+# File Author / Maintainer
+MAINTAINER Example MSR
+
+# Update the repository sources list
+RUN apt-get update
+################## BEGIN INSTALLATION ######################
+RUN apt-get update &&  apt-get -y install epel-release && apt-get install couchdb
+# Add CouchDB to the repository sources list
+RUN echo 'curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc \| sudo apt-key add -
+
+# Update the repository sources list once more
+RUN apt-get update
+
+# Install couchdb package (.deb)
+RUN apt-get install -y couchdb
+
+# Create the default data directory
+RUN mkdir -p /data/db
+##################### INSTALLATION END #####################
+# Expose the default port
+EXPOSE 5984
+
+# Default port to execute the entrypoint (couchdb) #/opt/couchdb/etc
+CMD ["/usr/bin/couchdb", "--config", "/opt/couchdb/etc"]
+
+============================================================
+In the above docker file is CouchDB creation

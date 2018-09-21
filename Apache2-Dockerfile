@@ -1,0 +1,30 @@
+Install the apache webserver using docker file
+===============================================
+FROM ubuntu
+MAINTAINER jogeswar jogeswaraws@gmail.com
+RUN apt update && apt-get install apache2 -y
+EXPOSE 80
+CMD apache2ctl -D FOREGROUND
+=================================================================
+Afer steps
+
+->Docker build -t msr/apache2:1.0 .
+->Docker run -itd -p 8080:80 <imageName>:<tagName>
+
+create one directory in path-/home/test/<directoryName>
+
+Create one html file<msr.html>
+=======================
+<html>
+<body bgcolor=yellow>
+<h1> This is msr testing page</h1>
+</body>
+</html>
+=====================================
+
+Moving to path /home/test/<directoryName> --using the scp or winscp 
+
+After run the docker command:
+->docker run -itd -p 8090:80 -v /home/test/<directoryName>:/var/www/html <imageName>
+
+

@@ -1,0 +1,132 @@
+Installation 
+================
+- name: download couchdb from git
+  git: repo=https://git-wip-us.apache.org/repos/asf/couchdb.git dest={{ couchdb_install_dir }} accept_hostkey=yes version={{ couchdb_version }}
+
+- name: Install grunt globally
+  npm: name=grunt-cli global=yes
+  sudo: yes
+
+- name: run configure
+  shell: ./configure chdir={{ couchdb_install_dir }}
+
+- name: run make clean
+  shell: make clean chdir={{ couchdb_install_dir }}
+
+- name: run make
+  shell: make chdir={{ couchdb_install_dir }}
+  ========================================================
+  Install erlang.yml
+  ==================
+  - name: Add Erlang repository key
+  apt_key: url=http://packages.erlang-solutions.com/debian/erlang_solutions.asc state=present
+  sudo: yes
+
+- name: Add Erlang repository
+  apt_repository: repo="deb http://packages.erlang-solutions.com/debian wheezy contrib" state=present
+  sudo: yes
+
+- name: Update apt cache
+  apt: update_cache=yes
+  sudo: yes
+  
+- name: Install erlang-nox
+  apt: name=erlang-nox state=present
+  sudo: yes
+  
+- name: Install erlang-dev
+  apt: name=erlang-dev state=present 
+  sudo: yes 
+  
+- name: Install libmozjs185-1.0
+  apt: name=libmozjs185-1.0 state=present  
+  sudo: yes
+   
+- name: Install libmozjs185-dev
+  apt: name=libmozjs185-dev state=present  
+  sudo: yes
+  
+- name: Install libcurl4-openssl-dev
+  apt: name=libcurl4-openssl-dev state=present  
+  sudo: yes
+   
+- name: Install libicu-dev
+  apt: name=libicu-dev state=present  
+  sudo: yes
+  ==========================================
+  Install nodejs.yml
+  ================
+  - name: download node.js binary archive
+  get_url: >
+    url=http://nodejs.org/dist/v{{ nodejs_version }}/node-v{{ nodejs_version }}-linux-arm-pi.tar.gz
+    dest=/tmp/node-{{ nodejs_version }}.tar.gz
+- name: create install directory
+  file: >
+    path={{ nodejs_install_dir }}
+    state=directory
+    mode=0755
+- name: install
+  command: /bin/tar xvzf /tmp/node-{{ nodejs_version }}.tar.gz -C {{ nodejs_install_dir }} --strip 1
+    creates={{ nodejs_install_dir }}/bin/node
+
+- name: link node binary
+  sudo: true
+  command: /bin/ln -s {{ nodejs_install_dir }}/bin/node /usr/local/bin/node
+    creates=/usr/local/bin/node
+
+- name: link npm binary
+  sudo: true
+  command: /bin/ln -s {{ nodejs_install_dir }}/bin/npm /usr/local/bin/npm
+    creates=/usr/local/bin/npm
+    =====================================
+    Install-rebar.yml
+    =================
+    - name: download rebar from git
+  git: repo=git://github.com/rebar/rebar.git dest={{ rebar_install_dir }} accept_hostkey=yes version={{ rebar_version }}
+
+- name: run bootstrap
+  shell: ./bootstrap chdir={{ rebar_install_dir }} creates={{ rebar_install_dir }}/rebar
+
+- name: link rebar binary
+  sudo: true
+  command: /bin/ln -s {{ rebar_install_dir }}/rebar /usr/local/bin/rebar creates=/usr/local/bin/rebar
+  ===================================================================================================
+  
+Ansible playbook
+=====================
+-- #this is couchdb installation
+
+- hosts: all
+  remote_user: pi
+  sudo: no
+  
+  vars:
+    nodejs_version: 0.10.28
+    nodejs_install_dir: /home/pi/nodejs
+    rebar_version: 2.5.1
+    rebar_install_dir: /home/pi/rebar
+    couchdb_version: developer-preview-2.0
+    couchdb_install_dir: /home/pi/couchdb
+
+  tasks:
+    - include: tasks/install-erlang.yml
+    - include: tasks/install-nodejs.yml
+    - include: tasks/install-rebar.yml
+    - include: tasks/install-couchdb.yml
+    
+    ==============================================
+    Install-node.yml
+- hosts: all
+  remote_user: pi
+  sudo: no
+  
+  vars:
+    nodejs_version: 0.10.28
+    nodejs_install_dir: /home/pi/nodejs
+    rebar_version: 2.5.1
+    rebar_install_dir: /home/pi/rebar
+    couchdb_install_dir: /home/pi/couchdb
+
+  tasks:
+    - include: tasks/install-nodejs.yml
+    =====================================================

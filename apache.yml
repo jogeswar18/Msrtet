@@ -22,3 +22,7 @@ Using ansible playbook
        service: name={{rhelpackage}} state=started
      - name: starting service apache2
        service: name={{ubuntupackage}} state=started
+       
+       ================================================================================
+        ansible-playbook apache2.yml --check
+         ansible-playbook apache2.yml 
